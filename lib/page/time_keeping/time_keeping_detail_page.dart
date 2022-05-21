@@ -1,5 +1,6 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:erp_app/common_widget/network_image_widget.dart';
+import 'package:erp_app/dependencies.dart';
 import 'package:erp_app/page/time_keeping/time_keeping_camera_widget.dart';
 import 'package:erp_app/preference/user_preference.dart';
 import 'package:erp_app/style/my_color.dart';
@@ -37,6 +38,7 @@ class _TimeKeepingDetailPageState extends State<TimeKeepingDetailPage> {
 
   bool isCheckin = true;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  UserPreference userPreference = AppDependencies.injector<UserPreference>();
 
   @override
   Widget build(BuildContext context) {
@@ -95,13 +97,13 @@ class _TimeKeepingDetailPageState extends State<TimeKeepingDetailPage> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            UserPreference.name,
+                            userPreference.fullName ?? '',
                             style: theme.textTheme.headline4,
                             overflow: TextOverflow.ellipsis,
                           ),
                           const SizedBox(height: 4),
                           Text(
-                            UserPreference.email,
+                            userPreference.userId ?? '',
                             style: theme.textTheme.headline5,
                             overflow: TextOverflow.ellipsis,
                           ),
@@ -127,7 +129,7 @@ class _TimeKeepingDetailPageState extends State<TimeKeepingDetailPage> {
                         ClipRRect(
                           borderRadius: BorderRadius.circular(30),
                           child: NetworkImageWidget(
-                            url: UserPreference.imageURL,
+                            url: userPreference.userImage ?? '',
                             width: 60,
                           ),
                         ),

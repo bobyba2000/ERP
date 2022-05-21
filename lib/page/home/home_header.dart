@@ -1,10 +1,9 @@
 import 'package:easy_localization/easy_localization.dart';
-import 'package:erp_app/page/time_keeping/time_keeping_detail_page.dart';
 import 'package:erp_app/page/time_keeping/time_keeping_list_page.dart';
 import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
 
-final _backgroundHeight = 60;
+const _backgroundHeight = 60;
 
 class HomeHeader extends StatelessWidget {
   const HomeHeader({

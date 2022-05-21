@@ -1,11 +1,9 @@
 import 'package:camera/camera.dart';
 import 'package:erp_app/common_widget/face_painter.dart';
 import 'package:erp_app/dependencies.dart';
-import 'package:erp_app/services/camera_service.dart';
 import 'package:flutter/material.dart';
-import 'package:google_ml_kit/google_ml_kit.dart';
 
-import '../services/face_detector_service.dart';
+import '../services/service.dart';
 
 class CameraDetectionPreview extends StatelessWidget {
   CameraDetectionPreview({Key? key}) : super(key: key);

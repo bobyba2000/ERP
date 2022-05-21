@@ -1,6 +1,6 @@
 import 'package:camera/camera.dart';
 import 'package:erp_app/dependencies.dart';
-import 'package:erp_app/services/camera_service.dart';
+import 'package:erp_app/services/service.dart';
 import 'package:google_ml_kit/google_ml_kit.dart';
 import 'package:flutter/material.dart';
 

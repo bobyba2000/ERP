@@ -26,5 +26,6 @@
     "goods_page": "Sản Phẩm",
     "notification_page": "Thông Báo",
     "other_page": "Khác",
+    "login_failed": "Đăng nhập thất bại.",
     "please_select_company": "Hãy chọn công ty của bạn"
 }

@@ -1,10 +1,12 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:erp_app/dependencies.dart';
-import 'package:erp_app/page/authentication/login_page.dart';
+import 'package:erp_app/page/landing_page.dart';
 import 'package:erp_app/style/my_theme.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
   await AppDependencies.initialize();
   runApp(
     EasyLocalization(
@@ -29,7 +31,8 @@ class MyApp extends StatelessWidget {
       supportedLocales: context.supportedLocales,
       locale: context.locale,
       theme: MyTheme.lightTheme(),
-      home: const LoginPage(),
+      home: const LandingPage(),
+      builder: EasyLoading.init(),
     );
   }
 }

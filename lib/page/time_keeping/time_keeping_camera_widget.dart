@@ -1,8 +1,7 @@
 import 'package:camera/camera.dart';
 import 'package:erp_app/common_widget/camera_detection_preview.dart';
 import 'package:erp_app/dependencies.dart';
-import 'package:erp_app/services/camera_service.dart';
-import 'package:erp_app/services/face_detector_service.dart';
+import 'package:erp_app/services/service.dart';
 import 'package:flutter/material.dart';
 
 class TimeKeepingCameraWidget extends StatefulWidget {

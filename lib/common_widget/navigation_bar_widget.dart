@@ -1,19 +1,22 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:erp_app/common_widget/network_image_widget.dart';
+import 'package:erp_app/dependencies.dart';
 import 'package:erp_app/preference/user_preference.dart';
 import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
 
 class NavigationBarWidget extends StatelessWidget {
   final Function(int) onSelect;
-  const NavigationBarWidget({Key? key, required this.onSelect})
-      : super(key: key);
+  NavigationBarWidget({Key? key, required this.onSelect}) : super(key: key);
+
+  final UserPreference userPreference =
+      AppDependencies.injector<UserPreference>();
 
   @override
   Widget build(BuildContext context) {
-    final name = UserPreference.name;
-    final email = UserPreference.email;
-    final imageURL = UserPreference.imageURL;
+    final fullName = userPreference.fullName ?? '';
+    final userId = userPreference.userId ?? '';
+    final userImage = userPreference.userImage ?? '';
 
     final theme = Theme.of(context);
     return Drawer(
@@ -28,9 +31,9 @@ class NavigationBarWidget extends StatelessWidget {
           child: ListView(
             children: [
               _NavigationHeader(
-                email: email,
-                name: name,
-                imageURL: imageURL,
+                userId: userId,
+                name: fullName,
+                imageURL: userImage,
               ),
               const SizedBox(height: 12),
               Divider(
@@ -52,10 +55,10 @@ class NavigationBarWidget extends StatelessWidget {
 
 class _NavigationHeader extends StatelessWidget {
   final String name;
-  final String email;
+  final String userId;
   final String? imageURL;
   const _NavigationHeader(
-      {Key? key, required this.name, required this.email, this.imageURL})
+      {Key? key, required this.name, required this.userId, this.imageURL})
       : super(key: key);
 
   @override
@@ -81,7 +84,7 @@ class _NavigationHeader extends StatelessWidget {
               ),
               const SizedBox(height: 4),
               Text(
-                email,
+                userId,
                 style: theme.textTheme.headline2,
               )
             ],

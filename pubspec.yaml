@@ -44,6 +44,12 @@ dependencies:
   tflite_flutter: ^0.9.0
   camera: ^0.9.4+19
   get_it: ^7.2.0
+  shared_preferences: ^2.0.15
+  dio: ^4.0.6
+  flutter_bloc: ^8.0.1
+  equatable: ^2.0.3
+  fluttertoast: ^8.0.9
+  flutter_easyloading: ^3.0.3
 
 dev_dependencies:
   flutter_test:

@@ -26,5 +26,6 @@
     "goods_page": "Goods",
     "notification_page": "Notification",
     "other_page": "Others",
+    "login_failed": "Login Failed",
     "please_select_company": "Please select your company"
 }

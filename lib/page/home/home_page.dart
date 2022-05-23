@@ -1,10 +1,11 @@
 import 'package:easy_localization/easy_localization.dart';
+import 'package:erp_app/dependencies.dart';
 import 'package:erp_app/page/home/home_header.dart';
 import 'package:erp_app/page/landing_page.dart';
 import 'package:erp_app/preference/user_preference.dart';
+import 'package:erp_app/services/service.dart';
 import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -22,7 +23,7 @@ class _HomePageState extends State<HomePage> {
         slivers: [
           SliverAppBar(
             title: Text(
-              "${tr('hi')} ${UserPreference}",
+              "${tr('hi')} ${UserPreference().fullName ?? ''}",
               style: theme.textTheme.button,
             ),
             centerTitle: false,
@@ -30,9 +31,9 @@ class _HomePageState extends State<HomePage> {
             actions: [
               GestureDetector(
                 onTap: () async {
-                  final _sharedPreferences =
-                      await SharedPreferences.getInstance();
-                  _sharedPreferences.remove('authToken');
+                  LoginService service =
+                      AppDependencies.injector<LoginService>();
+                  await service.logout();
                   Navigator.of(context).pushAndRemoveUntil(
                     MaterialPageRoute(
                       builder: (context) => const LandingPage(),

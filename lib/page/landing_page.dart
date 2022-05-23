@@ -1,5 +1,9 @@
+import 'package:easy_localization/easy_localization.dart';
+import 'package:erp_app/constants.dart';
+import 'package:erp_app/dependencies.dart';
 import 'package:erp_app/page/authentication/login_page.dart';
 import 'package:erp_app/page/main_page.dart';
+import 'package:erp_app/services/auth/auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -9,8 +13,28 @@ class LandingPage extends StatelessWidget {
 
   Future<String?> getToken() async {
     SharedPreferences _sharePreferences = await SharedPreferences.getInstance();
-    final token = _sharePreferences.getString('authToken');
-    return token;
+    final token = _sharePreferences.getString(UserInfoField.sid);
+    if (token == null) {
+      return null;
+    } else {
+      final String? expiredDateString =
+          _sharePreferences.getString(UserInfoField.expiredDate);
+      if (expiredDateString != null) {
+        DateTime expiredDate = DateTime.parse(expiredDateString);
+        if (expiredDate.compareTo(DateTime.now()) > 0) {
+          return token;
+        } else {
+          final LoginService _service =
+              AppDependencies.injector<LoginService>();
+          await _service.logout();
+          return null;
+        }
+      } else {
+        final LoginService _service = AppDependencies.injector<LoginService>();
+        await _service.logout();
+        return null;
+      }
+    }
   }
 
   @override

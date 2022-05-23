@@ -45,204 +45,202 @@ class _TimeKeepingDetailPageState extends State<TimeKeepingDetailPage> {
     final size = MediaQuery.of(context).size;
     final theme = Theme.of(context);
     final switchWidth = size.width - 12 * 2;
-    return Scaffold(
-      body: Container(
-        padding: const EdgeInsets.all(12),
-        width: size.width,
-        height: size.height - 40,
-        decoration: BoxDecoration(
-          color: theme.backgroundColor,
-          borderRadius: const BorderRadius.only(
-            topLeft: Radius.circular(12),
-            topRight: Radius.circular(12),
-          ),
+    return Container(
+      padding: const EdgeInsets.all(12),
+      width: size.width,
+      height: size.height - 40,
+      decoration: BoxDecoration(
+        color: theme.backgroundColor,
+        borderRadius: const BorderRadius.only(
+          topLeft: Radius.circular(12),
+          topRight: Radius.circular(12),
         ),
-        child: Form(
-          key: _formKey,
-          child: SingleChildScrollView(
-            child: Column(
-              children: [
-                Row(
-                  children: [
-                    InkWell(
-                      child: Icon(
-                        Iconsax.arrow_left,
-                        color: theme.accentColor,
-                        size: 30,
-                      ),
-                      onTap: () {
-                        Navigator.pop(context);
-                      },
+      ),
+      child: Form(
+        key: _formKey,
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              Row(
+                children: [
+                  InkWell(
+                    child: Icon(
+                      Iconsax.arrow_left,
+                      color: theme.accentColor,
+                      size: 30,
                     ),
-                    const Spacer(),
-                    Text(
-                      tr('time_keeping').toUpperCase(),
-                      style: theme.textTheme.headlineLarge,
+                    onTap: () {
+                      Navigator.pop(context);
+                    },
+                  ),
+                  const Spacer(),
+                  Text(
+                    tr('time_keeping').toUpperCase(),
+                    style: theme.textTheme.headlineLarge,
+                  ),
+                  const Spacer(),
+                  Container(width: 30),
+                ],
+              ),
+              const SizedBox(height: 12),
+              Stack(
+                children: [
+                  Container(
+                    padding: const EdgeInsets.fromLTRB(12, 20, 12, 12),
+                    margin: const EdgeInsets.only(top: 50),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(12),
                     ),
-                    const Spacer(),
-                    Container(width: 30),
-                  ],
-                ),
-                const SizedBox(height: 12),
-                Stack(
-                  children: [
-                    Container(
-                      padding: const EdgeInsets.fromLTRB(12, 20, 12, 12),
-                      margin: const EdgeInsets.only(top: 50),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            userPreference.fullName ?? '',
-                            style: theme.textTheme.headline4,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                          const SizedBox(height: 4),
-                          Text(
-                            userPreference.userId ?? '',
-                            style: theme.textTheme.headline5,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                          const SizedBox(height: 8),
-                          Divider(
-                            color: theme.dividerColor,
-                          ),
-                          Text(
-                            _dateString,
-                            style: theme.textTheme.headline4,
-                          ),
-                          const SizedBox(height: 4),
-                          Text(
-                            _timeString,
-                            style: theme.textTheme.headline5,
-                          )
-                        ],
-                      ),
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        ClipRRect(
-                          borderRadius: BorderRadius.circular(30),
-                          child: NetworkImageWidget(
-                            url: userPreference.userImage ?? '',
-                            width: 60,
-                          ),
+                        Text(
+                          userPreference.fullName ?? '',
+                          style: theme.textTheme.headline4,
+                          overflow: TextOverflow.ellipsis,
                         ),
+                        const SizedBox(height: 4),
+                        Text(
+                          userPreference.userId ?? '',
+                          style: theme.textTheme.headline5,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        const SizedBox(height: 8),
+                        Divider(
+                          color: theme.dividerColor,
+                        ),
+                        Text(
+                          _dateString,
+                          style: theme.textTheme.headline4,
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          _timeString,
+                          style: theme.textTheme.headline5,
+                        )
                       ],
                     ),
-                  ],
-                ),
-                const SizedBox(height: 12),
-                Row(
-                  children: [
-                    Expanded(
-                      child: FormBuilderDropdown<String>(
-                        name: '',
-                        decoration: InputDecoration(
-                          labelText: tr('company'),
-                          hintText: tr('company_hint'),
-                          border: InputBorder.none,
-                        ),
-                        allowClear: true,
-                        items: listCompany
-                            .map((company) => DropdownMenuItem(
-                                  value: company,
-                                  child: Text(
-                                    company,
-                                    style: theme.textTheme.headline5,
-                                  ),
-                                ))
-                            .toList(),
-                        onChanged: (value) async {},
-                        autovalidateMode: AutovalidateMode.onUserInteraction,
-                        validator: (value) {
-                          if (value == null) {
-                            return tr('please_select_company');
-                          }
-                          return null;
-                        },
-                      ),
-                    ),
-                    const SizedBox(width: 12),
-                    Expanded(
-                      child: FormBuilderDropdown<String>(
-                        name: '',
-                        decoration: InputDecoration(
-                          labelText: tr('construction'),
-                          hintText: tr('construction_hint'),
-                          border: InputBorder.none,
-                        ),
-                        allowClear: true,
-                        items: listConstruction
-                            .map((construction) => DropdownMenuItem(
-                                  value: construction,
-                                  child: Text(
-                                    construction,
-                                    style: theme.textTheme.headline5,
-                                  ),
-                                ))
-                            .toList(),
-                        onChanged: (value) async {},
-                        autovalidateMode: AutovalidateMode.onUserInteraction,
-                        validator: (value) {
-                          if (value == null) {
-                            return tr('please_select_construction');
-                          }
-                          return null;
-                        },
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 12),
-                _CheckSwitchWidget(
-                  value: isCheckin,
-                  onChanged: (value) {
-                    setState(
-                      () {
-                        isCheckin = !isCheckin;
-                      },
-                    );
-                  },
-                  width: switchWidth,
-                ),
-                const SizedBox(height: 80),
-                InkWell(
-                  child: Container(
-                    child: const Icon(
-                      Iconsax.camera,
-                      color: Colors.white,
-                      size: 40,
-                    ),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(100),
-                      gradient: LinearGradient(
-                        begin: Alignment.topCenter,
-                        end: Alignment.bottomCenter,
-                        colors: [
-                          theme.secondaryHeaderColor,
-                          theme.primaryColor,
-                        ],
-                      ),
-                    ),
-                    padding: const EdgeInsets.all(24),
                   ),
-                  onTap: () {
-                    if (_formKey.currentState!.validate()) {
-                      showDialog(
-                        context: context,
-                        builder: (context) => const TimeKeepingCameraWidget(),
-                      );
-                    }
-                  },
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(30),
+                        child: NetworkImageWidget(
+                          url: userPreference.userImage ?? '',
+                          width: 60,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+              const SizedBox(height: 12),
+              Row(
+                children: [
+                  Expanded(
+                    child: FormBuilderDropdown<String>(
+                      name: '',
+                      decoration: InputDecoration(
+                        labelText: tr('company'),
+                        hintText: tr('company_hint'),
+                        border: InputBorder.none,
+                      ),
+                      allowClear: true,
+                      items: listCompany
+                          .map((company) => DropdownMenuItem(
+                                value: company,
+                                child: Text(
+                                  company,
+                                  style: theme.textTheme.headline5,
+                                ),
+                              ))
+                          .toList(),
+                      onChanged: (value) async {},
+                      autovalidateMode: AutovalidateMode.onUserInteraction,
+                      validator: (value) {
+                        if (value == null) {
+                          return tr('please_select_company');
+                        }
+                        return null;
+                      },
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: FormBuilderDropdown<String>(
+                      name: '',
+                      decoration: InputDecoration(
+                        labelText: tr('construction'),
+                        hintText: tr('construction_hint'),
+                        border: InputBorder.none,
+                      ),
+                      allowClear: true,
+                      items: listConstruction
+                          .map((construction) => DropdownMenuItem(
+                                value: construction,
+                                child: Text(
+                                  construction,
+                                  style: theme.textTheme.headline5,
+                                ),
+                              ))
+                          .toList(),
+                      onChanged: (value) async {},
+                      autovalidateMode: AutovalidateMode.onUserInteraction,
+                      validator: (value) {
+                        if (value == null) {
+                          return tr('please_select_construction');
+                        }
+                        return null;
+                      },
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 12),
+              _CheckSwitchWidget(
+                value: isCheckin,
+                onChanged: (value) {
+                  setState(
+                    () {
+                      isCheckin = !isCheckin;
+                    },
+                  );
+                },
+                width: switchWidth,
+              ),
+              const SizedBox(height: 80),
+              InkWell(
+                child: Container(
+                  child: const Icon(
+                    Iconsax.camera,
+                    color: Colors.white,
+                    size: 40,
+                  ),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(100),
+                    gradient: LinearGradient(
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                      colors: [
+                        theme.secondaryHeaderColor,
+                        theme.primaryColor,
+                      ],
+                    ),
+                  ),
+                  padding: const EdgeInsets.all(24),
                 ),
-              ],
-            ),
+                onTap: () {
+                  if (_formKey.currentState!.validate()) {
+                    showDialog(
+                      context: context,
+                      builder: (context) => const TimeKeepingCameraWidget(),
+                    );
+                  }
+                },
+              ),
+            ],
           ),
         ),
       ),

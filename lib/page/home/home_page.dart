@@ -15,6 +15,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  UserPreference userPreference = AppDependencies.injector<UserPreference>();
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -23,7 +24,7 @@ class _HomePageState extends State<HomePage> {
         slivers: [
           SliverAppBar(
             title: Text(
-              "${tr('hi')} ${UserPreference().fullName ?? ''}",
+              "${tr('hi')} ${userPreference.fullName ?? ''}",
               style: theme.textTheme.button,
             ),
             centerTitle: false,
@@ -69,7 +70,7 @@ class _HomePageState extends State<HomePage> {
       child: Center(
         child: Text(
           text,
-          style: TextStyle(color: Colors.white, fontSize: 48),
+          style: const TextStyle(color: Colors.white, fontSize: 48),
         ),
       ),
     );

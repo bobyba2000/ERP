@@ -3,6 +3,7 @@ import 'package:erp_app/constants.dart';
 import 'package:erp_app/dependencies.dart';
 import 'package:erp_app/page/authentication/login_page.dart';
 import 'package:erp_app/page/main_page.dart';
+import 'package:erp_app/preference/user_preference.dart';
 import 'package:erp_app/services/auth/auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
@@ -22,6 +23,14 @@ class LandingPage extends StatelessWidget {
       if (expiredDateString != null) {
         DateTime expiredDate = DateTime.parse(expiredDateString);
         if (expiredDate.compareTo(DateTime.now()) > 0) {
+          UserPreference _userPreference =
+              AppDependencies.injector<UserPreference>();
+          _userPreference.fullName =
+              _sharePreferences.getString(UserInfoField.fullName);
+          _userPreference.userId =
+              _sharePreferences.getString(UserInfoField.userId);
+          _userPreference.userImage =
+              _sharePreferences.getString(UserInfoField.userImage);
           return token;
         } else {
           final LoginService _service =

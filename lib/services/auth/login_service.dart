@@ -46,8 +46,7 @@ class LoginService extends Network {
         final String? sid = listAuthenticate?[0].split('=').last;
         final DateTime? expiredDate = DateFormat('E, dd-MMMM-y hh:mm:ss')
             .parse(listAuthenticate?[1].split('=').last ?? '');
-        final String? fullName =
-            listCookies?[2].split(';').first.split('=').last;
+        final String? fullName = response.data?['full_name'];
         final String? userId = listCookies?[3].split(';').first.split('=').last;
         final String? userImage =
             listCookies?[4].split(';').first.split('=').last;

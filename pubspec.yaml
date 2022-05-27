@@ -50,6 +50,10 @@ dependencies:
   equatable: ^2.0.3
   fluttertoast: ^8.0.9
   flutter_easyloading: ^3.0.3
+  cookie_jar: ^3.0.1
+  path_provider: ^2.0.10
+  dio_cookie_manager: ^2.0.0
+  http: ^0.13.4
 
 dev_dependencies:
   flutter_test:

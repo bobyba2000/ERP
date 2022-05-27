@@ -27,5 +27,7 @@
     "notification_page": "Thông Báo",
     "other_page": "Khác",
     "login_failed": "Đăng nhập thất bại.",
+    "other_place": "Địa điểm khác",
+    "no_timekeeping_data": "Không có lịch sử chấm công.",
     "please_select_company": "Hãy chọn công ty của bạn"
 }

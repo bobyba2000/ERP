@@ -1,17 +1,27 @@
+import 'package:easy_localization/easy_localization.dart';
+
 class TimeKeepingModel {
-  bool isCheckin;
   String? name;
   String? owner;
-  DateTime? creation;
-  DateTime? modified;
-  DateTime? modified_by;
-  int? idx;
-  String? employee_name;
-  String? log_type;
+  String? employeeName;
+  String? logType;
   DateTime? time;
-  DateTime checkTime;
-  TimeKeepingModel({
-    this.isCheckin = true,
-    required this.checkTime,
-  });
+  String? location;
+  int? farLocation;
+  String? image;
+  TimeKeepingModel();
+
+  factory TimeKeepingModel.fromJson(dynamic json) {
+    List<dynamic> timeJson = List.from(json);
+    TimeKeepingModel res = TimeKeepingModel();
+    res.name = timeJson[0] as String;
+    res.owner = timeJson[1] as String;
+    res.employeeName = timeJson[2] as String;
+    res.logType = timeJson[3] as String;
+    res.time = DateFormat('yyyy-MM-dd hh:mm:ss').parse(timeJson[4] as String);
+    res.location = timeJson[5] as String?;
+    res.farLocation = timeJson[6] as int;
+    res.image = timeJson[7] as String?;
+    return res;
+  }
 }

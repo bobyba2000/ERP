@@ -27,5 +27,7 @@
     "notification_page": "Notification",
     "other_page": "Others",
     "login_failed": "Login Failed",
+    "other_place": "Other Place",
+    "no_timekeeping_data": "There are no checkin histories.",
     "please_select_company": "Please select your company"
 }

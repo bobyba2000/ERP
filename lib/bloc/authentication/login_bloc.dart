@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:erp_app/dependencies.dart';
+import 'package:erp_app/model/auth/login.dart';
 import 'package:erp_app/services/auth/login_service.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';

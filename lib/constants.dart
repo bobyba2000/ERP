@@ -5,3 +5,8 @@ class UserInfoField {
   static const String userId = 'userId';
   static const String userImage = 'userImage';
 }
+
+class TimeKeeping {
+  static const String checkin = 'Checkin';
+  static const String checkout = 'Checkout';
+}

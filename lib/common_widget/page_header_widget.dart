@@ -4,10 +4,14 @@ import 'package:iconsax/iconsax.dart';
 class PageHeaderWidget extends StatelessWidget {
   final String label;
   final Color? textColor;
+  final IconData? rightIcon;
+  final Function? onTapRightIcon;
   const PageHeaderWidget({
     Key? key,
     required this.label,
     this.textColor,
+    this.rightIcon,
+    this.onTapRightIcon,
   }) : super(key: key);
 
   @override
@@ -32,6 +36,20 @@ class PageHeaderWidget extends StatelessWidget {
             fontSize: 20,
             fontWeight: FontWeight.bold,
           ),
+        ),
+        const Spacer(),
+        Visibility(
+          child: InkWell(
+            onTap: () {
+              onTapRightIcon?.call();
+            },
+            child: Icon(
+              rightIcon,
+              color: theme.accentColor,
+              size: 30,
+            ),
+          ),
+          visible: rightIcon != null,
         ),
       ],
     );

@@ -1,14 +1,14 @@
 import 'dart:async';
 import 'package:easy_localization/easy_localization.dart';
-import 'package:erp_app/common_widget/date_picker_widget.dart';
+import 'package:erp_app/bloc/time_keeping/time_keeping_bloc.dart';
 import 'package:erp_app/common_widget/page_header_widget.dart';
 import 'package:erp_app/constants/constants.dart';
-import 'package:erp_app/model/time_keeping_model.dart';
+import 'package:erp_app/dependencies.dart';
 import 'package:erp_app/page/time_keeping/time_keeping_detail_page.dart';
-import 'package:erp_app/style/my_color.dart';
+import 'package:erp_app/page/time_keeping/time_keeping_item_widget.dart';
 import 'package:erp_app/utils/datetime_utils.dart';
 import 'package:flutter/material.dart';
-import 'package:iconsax/iconsax.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
 class TimeKeepingListPage extends StatefulWidget {
@@ -19,16 +19,8 @@ class TimeKeepingListPage extends StatefulWidget {
 }
 
 class _TimeKeepingListPageState extends State<TimeKeepingListPage> {
-  List<TimeKeepingModel> listCheck = [
-    TimeKeepingModel(checkTime: DateTime.now(), isCheckin: true),
-    TimeKeepingModel(checkTime: DateTime.now(), isCheckin: false),
-    TimeKeepingModel(checkTime: DateTime.now(), isCheckin: true),
-    TimeKeepingModel(checkTime: DateTime.now(), isCheckin: false),
-    TimeKeepingModel(checkTime: DateTime.now(), isCheckin: true),
-    TimeKeepingModel(checkTime: DateTime.now(), isCheckin: false),
-    TimeKeepingModel(checkTime: DateTime.now(), isCheckin: true),
-    TimeKeepingModel(checkTime: DateTime.now(), isCheckin: false),
-  ];
+  TimeKeepingBloc bloc = AppDependencies.injector<TimeKeepingBloc>();
+  DateTime selectedDate = DateTime.now();
 
   @override
   void initState() {
@@ -39,54 +31,103 @@ class _TimeKeepingListPageState extends State<TimeKeepingListPage> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return Scaffold(
-      body: Column(
-        children: [
-          Container(
-            color: Colors.white,
-            padding: EdgeInsets.fromLTRB(
-              12,
-              MediaQuery.of(context).padding.top + 12,
-              12,
-              12,
-            ),
-            child: Column(
-              children: [
-                PageHeaderWidget(
-                  label: tr('time_keeping'),
-                  textColor: theme.accentColor,
+      body: BlocProvider<TimeKeepingBloc>(
+        create: (context) => bloc..getListTimeKeeping(DateTime.now()),
+        child: BlocBuilder<TimeKeepingBloc, TimeKeepingState>(
+            builder: (context, state) {
+          return Column(
+            children: [
+              Container(
+                color: Colors.white,
+                padding: EdgeInsets.fromLTRB(
+                  12,
+                  MediaQuery.of(context).padding.top + 12,
+                  12,
+                  12,
                 ),
-                const SizedBox(height: 24),
-                _WeekCalendar(
-                  initialDate: DateTime.now(),
-                ),
-                const SizedBox(height: 24),
-              ],
-            ),
-          ),
-          Expanded(
-            child: Padding(
-              padding: const EdgeInsets.all(12),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    tr('timekeeping_history'),
-                    style: theme.textTheme.headlineLarge,
-                  ),
-                  const SizedBox(height: 12),
-                  Expanded(
-                    child: ListView.builder(
-                      itemBuilder: (context, index) {
-                        return _TimeKeepingItemWidget(value: listCheck[index]);
+                child: Column(
+                  children: [
+                    PageHeaderWidget(
+                      label: tr('time_keeping'),
+                      textColor: theme.accentColor,
+                      rightIcon: Icons.calendar_month,
+                      onTapRightIcon: () async {
+                        final date = await showDatePicker(
+                          context: context,
+                          initialDate: selectedDate,
+                          firstDate: DateTime(2022),
+                          lastDate: DateTime(2023),
+                        );
+                        if (date != null) {
+                          bloc.getListTimeKeeping(date);
+                          setState(() {
+                            selectedDate = date;
+                          });
+                        }
                       },
-                      itemCount: listCheck.length,
                     ),
-                  ),
-                ],
+                    const SizedBox(height: 24),
+                    _WeekCalendar(
+                      initialDate: selectedDate,
+                      onChange: (DateTime value) {
+                        if (value != selectedDate) {
+                          bloc.getListTimeKeeping(value);
+                          setState(() {
+                            selectedDate = value;
+                          });
+                        }
+                      },
+                    ),
+                    const SizedBox(height: 24),
+                  ],
+                ),
               ),
-            ),
-          )
-        ],
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.all(12),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        tr('timekeeping_history'),
+                        style: theme.textTheme.headlineLarge,
+                      ),
+                      const SizedBox(height: 12),
+                      Visibility(
+                        visible: state.listTimeKeeping.isNotEmpty,
+                        child: Expanded(
+                          child: ListView.builder(
+                            itemBuilder: (context, index) {
+                              return TimeKeepingItemWidget(
+                                  value: state.listTimeKeeping[index]);
+                            },
+                            itemCount: state.listTimeKeeping.length,
+                          ),
+                        ),
+                      ),
+                      Visibility(
+                        visible: state.listTimeKeeping.isEmpty,
+                        child: Center(
+                          child: Padding(
+                            padding: const EdgeInsets.only(top: 24),
+                            child: SizedBox(
+                              width: 200,
+                              child: Text(
+                                tr('no_timekeeping_data'),
+                                style: theme.textTheme.headline5,
+                                textAlign: TextAlign.center,
+                              ),
+                            ),
+                          ),
+                        ),
+                      )
+                    ],
+                  ),
+                ),
+              )
+            ],
+          );
+        }),
       ),
     );
   }
@@ -94,7 +135,12 @@ class _TimeKeepingListPageState extends State<TimeKeepingListPage> {
 
 class _WeekCalendar extends StatefulWidget {
   final DateTime initialDate;
-  const _WeekCalendar({Key? key, required this.initialDate}) : super(key: key);
+  final Function(DateTime) onChange;
+  const _WeekCalendar({
+    Key? key,
+    required this.initialDate,
+    required this.onChange,
+  }) : super(key: key);
 
   @override
   __WeekCalendarState createState() => __WeekCalendarState();
@@ -143,6 +189,33 @@ class __WeekCalendarState extends State<_WeekCalendar> {
   }
 
   @override
+  void didUpdateWidget(covariant _WeekCalendar oldWidget) {
+    if (oldWidget.initialDate != widget.initialDate) {
+      final date = widget.initialDate;
+      setState(() {
+        _selectedDate = date;
+        itemScrollController.scrollTo(
+            index: listDates.any(
+                    (element) => DateTimeUtils.isEqual(element, _selectedDate))
+                ? listDates
+                    .asMap()
+                    .entries
+                    .firstWhere(
+                      (element) =>
+                          DateTimeUtils.isEqual(element.value, _selectedDate),
+                    )
+                    .key
+                : 0,
+            duration: const Duration(milliseconds: 600));
+        _setTime();
+      });
+
+      widget.onChange.call(date);
+    }
+    super.didUpdateWidget(oldWidget);
+  }
+
+  @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return Column(
@@ -150,7 +223,7 @@ class __WeekCalendarState extends State<_WeekCalendar> {
         Padding(
           padding: const EdgeInsets.all(8.0),
           child: SizedBox(
-            height: 40,
+            height: 60,
             child: ScrollablePositionedList.builder(
               scrollDirection: Axis.horizontal,
               shrinkWrap: true,
@@ -169,14 +242,11 @@ class __WeekCalendarState extends State<_WeekCalendar> {
               itemBuilder: (BuildContext context, int index) {
                 return InkWell(
                   onTap: () {
-                    setState(() {
-                      _selectedDate = listDates[index];
-                      _setTime();
-                    });
+                    widget.onChange.call(listDates[index]);
                   },
                   child: Container(
-                    height: 80,
                     width: 50,
+                    padding: const EdgeInsets.symmetric(vertical: 4),
                     margin: const EdgeInsets.symmetric(horizontal: 2),
                     decoration: BoxDecoration(
                       color:
@@ -184,19 +254,42 @@ class __WeekCalendarState extends State<_WeekCalendar> {
                               ? theme.primaryColor
                               : Colors.transparent,
                       borderRadius: BorderRadius.circular(22),
+                      border: Border.all(
+                        color: DateTimeUtils.isEqual(
+                                listDates[index], DateTime.now())
+                            ? theme.primaryColor
+                            : Colors.transparent,
+                      ),
                     ),
                     alignment: Alignment.center,
-                    child: Text(
-                      WeekDay.weekDay[listDates[index].weekday - 1],
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        color: DateTimeUtils.isEqual(
-                                listDates[index], _selectedDate)
-                            ? Colors.white
-                            : theme.accentColor,
-                        fontSize: 16,
-                        fontWeight: FontWeight.w500,
-                      ),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          WeekDay.weekDay[listDates[index].weekday - 1],
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            color: DateTimeUtils.isEqual(
+                                    listDates[index], _selectedDate)
+                                ? Colors.white
+                                : theme.accentColor,
+                            fontSize: 16,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                        const SizedBox(height: 2),
+                        Text(
+                          DateFormat('dd/MM').format(listDates[index]),
+                          style: TextStyle(
+                            color: DateTimeUtils.isEqual(
+                                    listDates[index], _selectedDate)
+                                ? Colors.white
+                                : theme.accentColor,
+                            fontSize: 12,
+                            fontWeight: FontWeight.w400,
+                          ),
+                        )
+                      ],
                     ),
                   ),
                 );
@@ -206,38 +299,9 @@ class __WeekCalendarState extends State<_WeekCalendar> {
           ),
         ),
         const SizedBox(height: 12),
-        InkWell(
-          onTap: () async {
-            final date = await showDatePicker(
-              context: context,
-              initialDate: _selectedDate,
-              firstDate: DateTime(2022),
-              lastDate: DateTime(2023),
-            );
-            if (date != null) {
-              setState(() {
-                _selectedDate = date;
-                itemScrollController.scrollTo(
-                    index: listDates.any((element) =>
-                            DateTimeUtils.isEqual(element, _selectedDate))
-                        ? listDates
-                            .asMap()
-                            .entries
-                            .firstWhere(
-                              (element) => DateTimeUtils.isEqual(
-                                  element.value, _selectedDate),
-                            )
-                            .key
-                        : 0,
-                    duration: const Duration(milliseconds: 600));
-                _setTime();
-              });
-            }
-          },
-          child: Text(
-            _dateString,
-            style: theme.textTheme.headline4,
-          ),
+        Text(
+          _dateString,
+          style: theme.textTheme.headline4,
         ),
         const SizedBox(height: 8),
         Visibility(
@@ -296,72 +360,6 @@ class __WeekCalendarState extends State<_WeekCalendar> {
           ),
         ),
       ],
-    );
-  }
-}
-
-class _TimeKeepingItemWidget extends StatelessWidget {
-  final TimeKeepingModel value;
-  const _TimeKeepingItemWidget({Key? key, required this.value})
-      : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final color =
-        value.isCheckin ? MyColors.checkinColor : MyColors.checkoutColor;
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 24),
-      child: Row(
-        children: [
-          Container(
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(20),
-              border: Border.all(
-                color: color,
-                width: 1.5,
-              ),
-            ),
-            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-            child: Text(
-              DateFormat('HH:mm').format(value.checkTime),
-              style: theme.textTheme.headline4,
-            ),
-          ),
-          const SizedBox(width: 8),
-          Expanded(
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(10),
-              ),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: Text(
-                      value.isCheckin ? tr('checkin') : tr('checkout'),
-                      style: theme.textTheme.headline4,
-                    ),
-                  ),
-                  Container(
-                    decoration: BoxDecoration(
-                      color: color.withOpacity(0.3),
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    padding: const EdgeInsets.all(6),
-                    child: Icon(
-                      value.isCheckin ? Iconsax.login : Iconsax.logout,
-                      color: color,
-                    ),
-                  )
-                ],
-              ),
-            ),
-          )
-        ],
-      ),
     );
   }
 }

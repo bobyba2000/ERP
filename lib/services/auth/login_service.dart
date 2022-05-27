@@ -2,31 +2,8 @@ import 'package:dio/dio.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:erp_app/constants.dart';
 import 'package:erp_app/core/network.dart';
+import 'package:erp_app/model/auth/login.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
-class LoginRequest {
-  String usr;
-  String password;
-  String cmd = 'login';
-  String device = 'mobile';
-
-  LoginRequest({required this.usr, required this.password});
-
-  Map<String, dynamic> toMap() {
-    return {
-      'usr': usr,
-      'pwd': password,
-      'cmd': cmd,
-      'device': device,
-    };
-  }
-}
-
-class LoginResponse {
-  bool isSuccess;
-  String? errorMessage;
-  LoginResponse({required this.isSuccess, this.errorMessage});
-}
 
 class LoginService extends Network {
   Future<LoginResponse> login(LoginRequest request) async {
@@ -40,14 +17,16 @@ class LoginService extends Network {
           method: 'POST',
         ),
       );
+
       if (response.statusCode == 200) {
         final List<String>? listCookies = response.headers['Set-Cookie'];
         final List<String>? listAuthenticate = listCookies?[0].split(';');
         final String? sid = listAuthenticate?[0].split('=').last;
         final DateTime? expiredDate = DateFormat('E, dd-MMMM-y hh:mm:ss')
             .parse(listAuthenticate?[1].split('=').last ?? '');
-        final String? fullName = response.data?['full_name'];
-        final String? userId = listCookies?[3].split(';').first.split('=').last;
+        final String? fullName = Uri.decodeFull(response.data?['full_name']);
+        final String? userId = Uri.decodeFull(
+            listCookies?[3].split(';').first.split('=').last ?? '');
         final String? userImage =
             listCookies?[4].split(';').first.split('=').last;
         if (sid != null) {

@@ -1,15 +1,20 @@
 import 'package:easy_localization/easy_localization.dart';
+import 'package:erp_app/bloc/time_keeping/time_keeping_detail_bloc.dart';
 import 'package:erp_app/common_widget/network_image_widget.dart';
+import 'package:erp_app/constants.dart';
 import 'package:erp_app/dependencies.dart';
+import 'package:erp_app/model/time_keeping_model.dart';
 import 'package:erp_app/page/time_keeping/time_keeping_camera_widget.dart';
 import 'package:erp_app/preference/user_preference.dart';
 import 'package:erp_app/style/my_color.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:iconsax/iconsax.dart';
 
 class TimeKeepingDetailPage extends StatefulWidget {
-  const TimeKeepingDetailPage({Key? key}) : super(key: key);
+  final TimeKeepingModel? value;
+  const TimeKeepingDetailPage({Key? key, this.value}) : super(key: key);
 
   @override
   _TimeKeepingDetailPageState createState() => _TimeKeepingDetailPageState();
@@ -39,9 +44,35 @@ class _TimeKeepingDetailPageState extends State<TimeKeepingDetailPage> {
   bool isCheckin = true;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   UserPreference userPreference = AppDependencies.injector<UserPreference>();
+  TimeKeepingDetailBloc bloc =
+      AppDependencies.injector<TimeKeepingDetailBloc>();
+
+  @override
+  void initState() {
+    super.initState();
+    bloc.initValue(
+      widget.value ??
+          (TimeKeepingModel()
+            ..owner = userPreference.userId
+            ..employee = userPreference.employee
+            ..employeeName = userPreference.employeeName
+            ..logType = 'Checkin'),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
+    return BlocProvider<TimeKeepingDetailBloc>(
+      create: (context) => bloc,
+      child: BlocBuilder<TimeKeepingDetailBloc, TimeKeepingDetailState>(
+        builder: (context, state) {
+          return buildScreen(context, state.value);
+        },
+      ),
+    );
+  }
+
+  Widget buildScreen(BuildContext context, TimeKeepingModel value) {
     final size = MediaQuery.of(context).size;
     final theme = Theme.of(context);
     final switchWidth = size.width - 12 * 2;
@@ -205,6 +236,11 @@ class _TimeKeepingDetailPageState extends State<TimeKeepingDetailPage> {
                   setState(
                     () {
                       isCheckin = !isCheckin;
+                      if (isCheckin) {
+                        bloc.changeLogtype(TimeKeeping.checkin);
+                      } else {
+                        bloc.changeLogtype(TimeKeeping.checkout);
+                      }
                     },
                   );
                 },
@@ -231,12 +267,17 @@ class _TimeKeepingDetailPageState extends State<TimeKeepingDetailPage> {
                   ),
                   padding: const EdgeInsets.all(24),
                 ),
-                onTap: () {
+                onTap: () async {
                   if (_formKey.currentState!.validate()) {
-                    showDialog(
+                    bool? isSuccess = await showDialog(
                       context: context,
-                      builder: (context) => const TimeKeepingCameraWidget(),
+                      builder: (context) => TimeKeepingCameraWidget(
+                        bloc: bloc,
+                      ),
                     );
+                    if (isSuccess == true) {
+                      Navigator.of(context).pop(true);
+                    }
                   }
                 },
               ),

@@ -8,19 +8,20 @@ import 'package:erp_app/services/time_keeping/time_keeping_service.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 
-class TimeKeepingState extends Equatable {
+class TimeKeepingListState extends Equatable {
   final List<TimeKeepingModel> listTimeKeeping;
 
   @override
   List<Object?> get props => [listTimeKeeping];
 
-  const TimeKeepingState({required this.listTimeKeeping});
+  const TimeKeepingListState({required this.listTimeKeeping});
 }
 
-class TimeKeepingBloc extends Cubit<TimeKeepingState> {
+class TimeKeepingListBloc extends Cubit<TimeKeepingListState> {
   final TimeKeepingService _timeKeepingService =
       AppDependencies.injector<TimeKeepingService>();
-  TimeKeepingBloc() : super(const TimeKeepingState(listTimeKeeping: []));
+  TimeKeepingListBloc()
+      : super(const TimeKeepingListState(listTimeKeeping: []));
 
   Future<void> getListTimeKeeping(DateTime date) async {
     EasyLoading.show();
@@ -35,6 +36,6 @@ class TimeKeepingBloc extends Cubit<TimeKeepingState> {
       ),
     );
     EasyLoading.dismiss();
-    emit(TimeKeepingState(listTimeKeeping: response.listTimeKeeping));
+    emit(TimeKeepingListState(listTimeKeeping: response.listTimeKeeping));
   }
 }

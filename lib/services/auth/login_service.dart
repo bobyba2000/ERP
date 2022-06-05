@@ -22,15 +22,19 @@ class LoginService extends Network {
         final List<String>? listCookies = response.headers['Set-Cookie'];
         final List<String>? listAuthenticate = listCookies?[0].split(';');
         final String? sid = listAuthenticate?[0].split('=').last;
-        final DateTime? expiredDate = DateFormat('E, dd-MMMM-y hh:mm:ss')
+        final DateTime? expiredDate = DateFormat('E, dd-MMM-yyyy hh:mm:ss')
             .parse(listAuthenticate?[1].split('=').last ?? '');
         final String? fullName = Uri.decodeFull(response.data?['full_name']);
         final String? userId = Uri.decodeFull(
             listCookies?[3].split(';').first.split('=').last ?? '');
         final String? userImage =
             listCookies?[4].split(';').first.split('=').last;
+        final String apiKey = response.data?['data']['api_key'];
+        final String apiSecret = response.data?['data']['api_secret'];
+
         if (sid != null) {
-          await _storeData(sid, expiredDate, fullName, userId, userImage);
+          await _storeData(
+              sid, expiredDate, fullName, userId, userImage, apiKey, apiSecret);
           return LoginResponse(isSuccess: true);
         } else {
           return LoginResponse(
@@ -43,6 +47,7 @@ class LoginService extends Network {
             isSuccess: false, errorMessage: tr('login_failed'));
       }
     } catch (e) {
+      print(e);
       return LoginResponse(isSuccess: false, errorMessage: tr('login_failed'));
     }
   }
@@ -57,8 +62,15 @@ class LoginService extends Network {
     _sharedPreferences.remove(UserInfoField.fullName);
   }
 
-  Future<void> _storeData(String sid, DateTime? expiredDate, String? fullName,
-      String? userId, String? userImage) async {
+  Future<void> _storeData(
+    String sid,
+    DateTime? expiredDate,
+    String? fullName,
+    String? userId,
+    String? userImage,
+    String apiKey,
+    String apiSecret,
+  ) async {
     final SharedPreferences _sharedPreferences =
         await SharedPreferences.getInstance();
     await _sharedPreferences.setString(
@@ -81,5 +93,7 @@ class LoginService extends Network {
       UserInfoField.userImage,
       userImage ?? '',
     );
+    await _sharedPreferences.setString(UserInfoField.apiKey, apiKey);
+    await _sharedPreferences.setString(UserInfoField.apiSecret, apiSecret);
   }
 }

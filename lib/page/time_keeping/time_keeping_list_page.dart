@@ -1,12 +1,13 @@
 import 'dart:async';
 import 'package:easy_localization/easy_localization.dart';
-import 'package:erp_app/bloc/time_keeping/time_keeping_bloc.dart';
+import 'package:erp_app/bloc/time_keeping/time_keeping_list_bloc.dart';
 import 'package:erp_app/common_widget/page_header_widget.dart';
 import 'package:erp_app/constants/constants.dart';
 import 'package:erp_app/dependencies.dart';
 import 'package:erp_app/page/time_keeping/time_keeping_detail_page.dart';
 import 'package:erp_app/page/time_keeping/time_keeping_item_widget.dart';
 import 'package:erp_app/utils/datetime_utils.dart';
+import 'package:erp_app/utils/toast_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
@@ -19,7 +20,7 @@ class TimeKeepingListPage extends StatefulWidget {
 }
 
 class _TimeKeepingListPageState extends State<TimeKeepingListPage> {
-  TimeKeepingBloc bloc = AppDependencies.injector<TimeKeepingBloc>();
+  TimeKeepingListBloc bloc = AppDependencies.injector<TimeKeepingListBloc>();
   DateTime selectedDate = DateTime.now();
 
   @override
@@ -31,9 +32,9 @@ class _TimeKeepingListPageState extends State<TimeKeepingListPage> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return Scaffold(
-      body: BlocProvider<TimeKeepingBloc>(
+      body: BlocProvider<TimeKeepingListBloc>(
         create: (context) => bloc..getListTimeKeeping(DateTime.now()),
-        child: BlocBuilder<TimeKeepingBloc, TimeKeepingState>(
+        child: BlocBuilder<TimeKeepingListBloc, TimeKeepingListState>(
             builder: (context, state) {
           return Column(
             children: [
@@ -167,6 +168,12 @@ class __WeekCalendarState extends State<_WeekCalendar> {
     _timer = Timer.periodic(const Duration(seconds: 1), (timer) => _getTime());
     _selectedDate = widget.initialDate;
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    _timer.cancel();
+    super.dispose();
   }
 
   void _getTime() {
@@ -318,28 +325,32 @@ class __WeekCalendarState extends State<_WeekCalendar> {
             mainAxisSize: MainAxisSize.min,
             children: [
               InkWell(
-                  child: Container(
-                    decoration: BoxDecoration(
-                      border: Border.all(color: theme.primaryColor, width: 2),
-                      borderRadius: BorderRadius.circular(30),
-                    ),
-                    padding: const EdgeInsets.symmetric(vertical: 4),
-                    width: 120,
-                    alignment: Alignment.center,
-                    child: Text(
-                      tr('checkin'),
-                      style: theme.textTheme.headline4,
-                    ),
+                child: Container(
+                  decoration: BoxDecoration(
+                    border: Border.all(color: theme.primaryColor, width: 2),
+                    borderRadius: BorderRadius.circular(30),
                   ),
-                  onTap: () async {
-                    await showModalBottomSheet(
-                      context: context,
-                      builder: (context) => const TimeKeepingDetailPage(),
-                      useRootNavigator: true,
-                      isScrollControlled: true,
-                      backgroundColor: Colors.transparent,
-                    );
-                  }),
+                  padding: const EdgeInsets.symmetric(vertical: 4),
+                  width: 120,
+                  alignment: Alignment.center,
+                  child: Text(
+                    tr('checkin'),
+                    style: theme.textTheme.headline4,
+                  ),
+                ),
+                onTap: () async {
+                  bool? isSuccess = await showModalBottomSheet(
+                    context: context,
+                    builder: (context) => const TimeKeepingDetailPage(),
+                    useRootNavigator: true,
+                    isScrollControlled: true,
+                    backgroundColor: Colors.transparent,
+                  );
+                  if (isSuccess == true) {
+                    widget.onChange(DateTime.now());
+                  }
+                },
+              ),
               const SizedBox(width: 12),
               InkWell(
                 child: Container(
@@ -355,6 +366,18 @@ class __WeekCalendarState extends State<_WeekCalendar> {
                     style: theme.textTheme.headline4,
                   ),
                 ),
+                onTap: () async {
+                  bool? isSuccess = await showModalBottomSheet(
+                    context: context,
+                    builder: (context) => const TimeKeepingDetailPage(),
+                    useRootNavigator: true,
+                    isScrollControlled: true,
+                    backgroundColor: Colors.transparent,
+                  );
+                  if (isSuccess == true) {
+                    widget.onChange(DateTime.now());
+                  }
+                },
               ),
             ],
           ),

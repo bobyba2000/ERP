@@ -29,5 +29,7 @@
     "login_failed": "Đăng nhập thất bại.",
     "other_place": "Địa điểm khác",
     "no_timekeeping_data": "Không có lịch sử chấm công.",
+    "capture_unsuccess": "Chụp ảnh không thành công.",
+    "checkin_failed": "Điểm danh thất bại",
     "please_select_company": "Hãy chọn công ty của bạn"
 }

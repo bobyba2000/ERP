@@ -1,7 +1,6 @@
 import 'package:easy_localization/easy_localization.dart';
 
 class TimeKeepingModel {
-  String? name;
   String? owner;
   String? employeeName;
   String? logType;
@@ -9,12 +8,12 @@ class TimeKeepingModel {
   String? location;
   int? farLocation;
   String? image;
+  String? employee;
   TimeKeepingModel();
 
   factory TimeKeepingModel.fromJson(dynamic json) {
     List<dynamic> timeJson = List.from(json);
     TimeKeepingModel res = TimeKeepingModel();
-    res.name = timeJson[0] as String;
     res.owner = timeJson[1] as String;
     res.employeeName = timeJson[2] as String;
     res.logType = timeJson[3] as String;

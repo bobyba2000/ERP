@@ -1,11 +1,14 @@
 import 'package:camera/camera.dart';
+import 'package:erp_app/bloc/time_keeping/time_keeping_detail_bloc.dart';
 import 'package:erp_app/common_widget/camera_detection_preview.dart';
 import 'package:erp_app/dependencies.dart';
 import 'package:erp_app/services/service.dart';
 import 'package:flutter/material.dart';
 
 class TimeKeepingCameraWidget extends StatefulWidget {
-  const TimeKeepingCameraWidget({Key? key}) : super(key: key);
+  final TimeKeepingDetailBloc bloc;
+  const TimeKeepingCameraWidget({Key? key, required this.bloc})
+      : super(key: key);
 
   @override
   _TimeKeepingCameraWidgetState createState() =>
@@ -71,7 +74,11 @@ class _TimeKeepingCameraWidgetState extends State<TimeKeepingCameraWidget> {
       ),
       child: _isInitializing
           ? const Center(child: CircularProgressIndicator())
-          : CameraDetectionPreview(),
+          : CameraDetectionPreview(
+              bloc: widget.bloc,
+              onCapture: () {
+                _frameFaces();
+              }),
     );
   }
 }

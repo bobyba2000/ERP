@@ -29,5 +29,7 @@
     "login_failed": "Login Failed",
     "other_place": "Other Place",
     "no_timekeeping_data": "There are no checkin histories.",
+    "capture_unsuccess": "Capture picture unsuccessfully.",
+    "checkin_failed": "Checkin failed",
     "please_select_company": "Please select your company"
 }

@@ -4,6 +4,8 @@ class UserInfoField {
   static const String expiredDate = 'expiredDate';
   static const String userId = 'userId';
   static const String userImage = 'userImage';
+  static const String apiKey = 'apiKey';
+  static const String apiSecret = 'apiSecret';
 }
 
 class TimeKeeping {

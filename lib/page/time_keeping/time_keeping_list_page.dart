@@ -341,7 +341,9 @@ class __WeekCalendarState extends State<_WeekCalendar> {
                 onTap: () async {
                   bool? isSuccess = await showModalBottomSheet(
                     context: context,
-                    builder: (context) => const TimeKeepingDetailPage(),
+                    builder: (context) => const TimeKeepingDetailPage(
+                      isCheckin: true,
+                    ),
                     useRootNavigator: true,
                     isScrollControlled: true,
                     backgroundColor: Colors.transparent,
@@ -369,7 +371,9 @@ class __WeekCalendarState extends State<_WeekCalendar> {
                 onTap: () async {
                   bool? isSuccess = await showModalBottomSheet(
                     context: context,
-                    builder: (context) => const TimeKeepingDetailPage(),
+                    builder: (context) => const TimeKeepingDetailPage(
+                      isCheckin: false,
+                    ),
                     useRootNavigator: true,
                     isScrollControlled: true,
                     backgroundColor: Colors.transparent,

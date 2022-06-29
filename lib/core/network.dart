@@ -5,10 +5,12 @@ import 'package:shared_preferences/shared_preferences.dart';
 class Network {
   Dio dio = Dio(
     BaseOptions(
-      baseUrl: 'https://erp.ebst.tech',
-      connectTimeout: 5000,
-      receiveTimeout: 3000,
-    ),
+        baseUrl: 'https://erp.ebst.tech',
+        connectTimeout: 5000,
+        receiveTimeout: 3000,
+        validateStatus: (status) {
+          return (status ?? 500) < 500;
+        }),
   );
 
   Future<void> setHeader() async {

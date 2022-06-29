@@ -9,7 +9,7 @@ class LoginService extends Network {
   Future<LoginResponse> login(LoginRequest request) async {
     try {
       final response = await dio.request(
-        '/api/method/frappe.auth.login',
+        '/api/method/loginv2',
         data: FormData.fromMap(
           request.toMap(),
         ),

@@ -37,6 +37,7 @@ class LoginBloc extends Cubit<LoginState> {
       usr: userId,
       password: password,
     ));
+    print(response.isSuccess);
     EasyLoading.dismiss();
     emit(
       state.copyWith(

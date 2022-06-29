@@ -9,7 +9,7 @@ import 'package:http/http.dart' as http;
 class TimeKeepingService extends Network {
   Future<GetHistoriesResponse> getHistories(GetHistoriesRequest request) async {
     try {
-      setHeader();
+      await setHeader();
       final response = await dio.request(
         '/api/method/frappe.desk.reportview.get',
         data: FormData.fromMap(request.toMap()),
@@ -17,21 +17,6 @@ class TimeKeepingService extends Network {
           method: 'POST',
         ),
       );
-      // final response = await http.post(
-      //     Uri.parse(
-      //         'https://erp.ebst.tech/api/method/frappe.desk.reportview.get'),
-      //     body: request.toMap(),
-      //     headers: {
-      //       'Cookie':
-      //           'user_image=; system_user=yes; full_name=Doan%20Thinh; user_id=thinh.doan%40ebst.tech; sid=1b861f76b468acfb378869ac55a11794d2cd607c9842c952e270ece9; io=H4bOmqMOU2bPy1c0AA8c',
-      //       'X-Frappe-CSRF-Token':
-      //           'c61e6b6d379ff2fa00091540f48539a2b57960126df506ac0b139fbd',
-      //       "Access-Control-Allow-Origin": "*",
-      //       "Access-Control-Allow-Methods":
-      //           "POST, GET, OPTIONS, PUT, DELETE, HEAD",
-      //     });
-
-      print(response.data);
       if (response.statusCode == 200) {
         return GetHistoriesResponse.fromJson(response.data);
       } else {
@@ -48,7 +33,7 @@ class TimeKeepingService extends Network {
 
   Future<bool> checkin(CheckinRequest request) async {
     try {
-      setHeader();
+      await setHeader();
       final response = await dio.request(
         '/api/method/frappe.desk.form.save.savedocs',
         data: FormData.fromMap(request.toMap()),
@@ -69,7 +54,6 @@ class TimeKeepingService extends Network {
       //       "Access-Control-Allow-Methods":
       //           "POST, GET, OPTIONS, PUT, DELETE, HEAD",
       //     });
-      print(response.data);
       if (response.statusCode == 200) {
         return true;
       }

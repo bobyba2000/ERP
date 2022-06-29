@@ -36,20 +36,21 @@ class TimeKeepingDetailBloc extends Cubit<TimeKeepingDetailState> {
   }
 
   Future<bool> checkin(XFile image) async {
-    String time = DateFormat('yyyy-MM-dd hh:mm:ss').format(DateTime.now());
+    String time = DateFormat('yyyy-MM-dd HH:mm:ss').format(DateTime.now());
     String name = 'EMP-${state.value.logType}-$time';
-    bool isSuccess = await _fileService.uploadFile(image, name);
-    if (!isSuccess) {
+    String? imageUrl = await _fileService.uploadFile(image, name);
+    if (imageUrl == null) {
       return false;
     }
     final response = await _service.checkin(
       CheckinRequest(
         employee: state.value.employee ?? '',
         owner: state.value.owner ?? '',
-        time: DateFormat('yyyy-MM-dd hh:mm:ss').format(DateTime.now()),
+        time: DateFormat('yyyy-MM-dd HH:mm:ss').format(DateTime.now()),
         employeeName: state.value.employeeName ?? '',
         farLocation: state.value.farLocation ?? 0,
         logtype: state.value.logType ?? '',
+        image: imageUrl,
       ),
     );
     if (response) {

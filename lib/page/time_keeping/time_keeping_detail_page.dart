@@ -9,12 +9,16 @@ import 'package:erp_app/preference/user_preference.dart';
 import 'package:erp_app/style/my_color.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:iconsax/iconsax.dart';
 
 class TimeKeepingDetailPage extends StatefulWidget {
   final TimeKeepingModel? value;
-  const TimeKeepingDetailPage({Key? key, this.value}) : super(key: key);
+  final bool isCheckin;
+  const TimeKeepingDetailPage({
+    Key? key,
+    this.value,
+    this.isCheckin = true,
+  }) : super(key: key);
 
   @override
   _TimeKeepingDetailPageState createState() => _TimeKeepingDetailPageState();
@@ -25,21 +29,21 @@ class _TimeKeepingDetailPageState extends State<TimeKeepingDetailPage> {
       "${tr('date')} ${DateTime.now().day}, ${tr('month')} ${DateTime.now().month} ${tr('year')} ${DateTime.now().year}";
   final String _timeString = DateFormat('HH:mm').format(DateTime.now());
 
-  List<String> listCompany = [
-    'Microsoft',
-    'Viettel',
-    'Mobiphone',
-    'VNG',
-    'FPT Software',
-    'Google'
-  ];
+  // List<String> listCompany = [
+  //   'Microsoft',
+  //   'Viettel',
+  //   'Mobiphone',
+  //   'VNG',
+  //   'FPT Software',
+  //   'Google'
+  // ];
 
-  List<String> listConstruction = [
-    'Cầu Bình Lợi',
-    'Cầu chữ Y',
-    'Đại học Bách Khoa',
-    'Đại học KHTN',
-  ];
+  // List<String> listConstruction = [
+  //   'Cầu Bình Lợi',
+  //   'Cầu chữ Y',
+  //   'Đại học Bách Khoa',
+  //   'Đại học KHTN',
+  // ];
 
   bool isCheckin = true;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
@@ -58,6 +62,7 @@ class _TimeKeepingDetailPageState extends State<TimeKeepingDetailPage> {
             ..employeeName = userPreference.employeeName
             ..logType = 'Checkin'),
     );
+    isCheckin = widget.isCheckin;
   }
 
   @override
@@ -168,67 +173,67 @@ class _TimeKeepingDetailPageState extends State<TimeKeepingDetailPage> {
                 ],
               ),
               const SizedBox(height: 12),
-              Row(
-                children: [
-                  Expanded(
-                    child: FormBuilderDropdown<String>(
-                      name: '',
-                      decoration: InputDecoration(
-                        labelText: tr('company'),
-                        hintText: tr('company_hint'),
-                        border: InputBorder.none,
-                      ),
-                      allowClear: true,
-                      items: listCompany
-                          .map((company) => DropdownMenuItem(
-                                value: company,
-                                child: Text(
-                                  company,
-                                  style: theme.textTheme.headline5,
-                                ),
-                              ))
-                          .toList(),
-                      onChanged: (value) async {},
-                      autovalidateMode: AutovalidateMode.onUserInteraction,
-                      validator: (value) {
-                        if (value == null) {
-                          return tr('please_select_company');
-                        }
-                        return null;
-                      },
-                    ),
-                  ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: FormBuilderDropdown<String>(
-                      name: '',
-                      decoration: InputDecoration(
-                        labelText: tr('construction'),
-                        hintText: tr('construction_hint'),
-                        border: InputBorder.none,
-                      ),
-                      allowClear: true,
-                      items: listConstruction
-                          .map((construction) => DropdownMenuItem(
-                                value: construction,
-                                child: Text(
-                                  construction,
-                                  style: theme.textTheme.headline5,
-                                ),
-                              ))
-                          .toList(),
-                      onChanged: (value) async {},
-                      autovalidateMode: AutovalidateMode.onUserInteraction,
-                      validator: (value) {
-                        if (value == null) {
-                          return tr('please_select_construction');
-                        }
-                        return null;
-                      },
-                    ),
-                  ),
-                ],
-              ),
+              // Row(
+              //   children: [
+              //     Expanded(
+              //       child: FormBuilderDropdown<String>(
+              //         name: '',
+              //         decoration: InputDecoration(
+              //           labelText: tr('company'),
+              //           hintText: tr('company_hint'),
+              //           border: InputBorder.none,
+              //         ),
+              //         allowClear: true,
+              //         items: listCompany
+              //             .map((company) => DropdownMenuItem(
+              //                   value: company,
+              //                   child: Text(
+              //                     company,
+              //                     style: theme.textTheme.headline5,
+              //                   ),
+              //                 ))
+              //             .toList(),
+              //         onChanged: (value) async {},
+              //         autovalidateMode: AutovalidateMode.onUserInteraction,
+              //         validator: (value) {
+              //           if (value == null) {
+              //             return tr('please_select_company');
+              //           }
+              //           return null;
+              //         },
+              //       ),
+              //     ),
+              //     const SizedBox(width: 12),
+              //     Expanded(
+              //       child: FormBuilderDropdown<String>(
+              //         name: '',
+              //         decoration: InputDecoration(
+              //           labelText: tr('construction'),
+              //           hintText: tr('construction_hint'),
+              //           border: InputBorder.none,
+              //         ),
+              //         allowClear: true,
+              //         items: listConstruction
+              //             .map((construction) => DropdownMenuItem(
+              //                   value: construction,
+              //                   child: Text(
+              //                     construction,
+              //                     style: theme.textTheme.headline5,
+              //                   ),
+              //                 ))
+              //             .toList(),
+              //         onChanged: (value) async {},
+              //         autovalidateMode: AutovalidateMode.onUserInteraction,
+              //         validator: (value) {
+              //           if (value == null) {
+              //             return tr('please_select_construction');
+              //           }
+              //           return null;
+              //         },
+              //       ),
+              //     ),
+              //   ],
+              // ),
               const SizedBox(height: 12),
               _CheckSwitchWidget(
                 value: isCheckin,
